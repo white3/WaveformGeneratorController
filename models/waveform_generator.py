@@ -1,39 +1,58 @@
-import pyvisa
-from tkinter import messagebox
+import threading
+from typing import Optional
+
+try:
+    import pyvisa
+except ImportError:  # pragma: no cover - optional during tests
+    pyvisa = None
+
 
 class WaveformGenerator:
-    def __init__(self, resource_address):
-        self.rm = pyvisa.ResourceManager()
+    def __init__(self, resource_address: Optional[str], resource_manager=None):
+        self.rm = resource_manager or (pyvisa.ResourceManager() if pyvisa else None)
         self.device = None
         self.address = resource_address
+        self._lock = threading.RLock()
 
     def connect(self):
-        try:
+        if not self.address:
+            raise ValueError("No device resource address selected.")
+        if self.rm is None:
+            raise RuntimeError("pyvisa is required to connect to the waveform generator.")
+        with self._lock:
             self.device = self.rm.open_resource(self.address)
-            self.device.write('*IDN?')
+            if hasattr(self.device, "query"):
+                self.device.query("*IDN?")
+            else:
+                self.device.write("*IDN?")
             return True
-        except Exception as e:
-            messagebox.showerror("Connection Error", str(e))
-            return False
 
     def disconnect(self):
-        if self.device:
-            self.device.close()
+        with self._lock:
+            if self.device:
+                self.device.close()
+                self.device = None
+
+    def _write(self, command: str):
+        if self.device is None:
+            raise RuntimeError("Device is not connected.")
+        with self._lock:
+            self.device.write(command)
 
     def set_waveform(self, waveform):
-        self.device.write(f"FUNC {waveform}")
+        self._write(f"FUNC {waveform}")
 
     def set_parameters(self, frequency, amplitude, offset, phase):
-        self.device.write(f"FREQ {frequency}")
-        self.device.write(f"VOLT {amplitude}")
-        self.device.write(f"VOLT:OFFSET {offset}")
-        self.device.write(f"PHAS {phase}")
+        self._write(f"FREQ {frequency}")
+        self._write(f"VOLT {amplitude}")
+        self._write(f"VOLT:OFFSET {offset}")
+        self._write(f"PHAS {phase}")
 
     def toggle_channel(self, channel, state):
-        self.device.write(f"OUTP{channel} {'ON' if state else 'OFF'}")
+        self._write(f"OUTP{channel} {'ON' if state else 'OFF'}")
 
     def enable_output(self):
-        self.device.write("OUTP ON")
+        self._write("OUTP ON")
 
     def disable_output(self):
-        self.device.write("OUTP OFF")
+        self._write("OUTP OFF")
