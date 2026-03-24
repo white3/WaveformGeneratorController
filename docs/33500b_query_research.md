@@ -107,17 +107,294 @@ Keysight 官方 SCPI 规则说明：一个既可设置又可查询的命令，�
 - `scripts/test_33500b_waveform_readback_candidates.py`
   - 对“是否存在波形数据读回接口”做偏探索式探测，尝试一些常见但未在当前官方手册中明确找到的 readback 命令。
 
-## 待你实机回传的内容
+## 实机测试回传的内容
 
-请你连接真机后，把以下内容发我：
+连接真机后，进行以下测试：
 
 1. `test_33500b_basic_queries.py` 的终端输出；
+
+```
+$ python scripts/test_33500b_basic_queries.py  USB0::XXX::INSTR
+{
+  "timestamp": "2026-03-23 10:24:45",
+  "resource": "USB0::XXX::INSTR",
+  "writes": [
+    {
+      "ok": true,
+      "command": "*CLS"
+    }
+  ],
+  "queries": {
+    "identity": [
+      {
+        "ok": true,
+        "command": "*IDN?",
+        "response": "Agilent Technologies,33521B,MY62003665,5.03-3.15-2.00-58-00"
+      },
+      {
+        "ok": true,
+        "command": "SYST:VERS?",
+        "response": "1994.0"
+      },
+      {
+        "ok": false,
+        "command": "*TST?",
+        "error": "VI_ERROR_TMO (-1073807339): Timeout expired before operation completed."
+      },
+      {
+        "ok": true,
+        "command": "SYST:ERR?",
+        "response": "-310,\"System error\""
+      }
+    ],
+    "query_candidates": [
+      {
+        "ok": true,
+        "command": "FUNC?",
+        "response": "SIN"
+      },
+      {
+        "ok": true,
+        "command": "SOUR1:FUNC?",
+        "response": "SIN"
+      },
+      {
+        "ok": true,
+        "command": "FREQ?",
+        "response": "+1.000000000000000E+03"
+      },
+      {
+        "ok": true,
+        "command": "SOUR1:FREQ?",
+        "response": "+1.000000000000000E+03"
+      },
+      {
+        "ok": true,
+        "command": "VOLT?",
+        "response": "+1.0000000000000E-01"
+      },
+      {
+        "ok": true,
+        "command": "SOUR1:VOLT?",
+        "response": "+1.0000000000000E-01"
+      },
+      {
+        "ok": true,
+        "command": "VOLT:OFFSET?",
+        "response": "+0.0000000000000E+00"
+      },
+      {
+        "ok": true,
+        "command": "SOUR1:VOLT:OFFSET?",
+        "response": "+0.0000000000000E+00"
+      },
+      {
+        "ok": true,
+        "command": "PHAS?",
+        "response": "+0.0000000000000E+00"
+      },
+      {
+        "ok": true,
+        "command": "SOUR1:PHAS?",
+        "response": "+0.0000000000000E+00"
+      },
+      {
+        "ok": true,
+        "command": "OUTP1?",
+        "response": "0"
+      },
+      {
+        "ok": true,
+        "command": "OUTP?",
+        "response": "0"
+      }
+    ]
+  }
+}
+```
+
 2. `test_33500b_query_matrix.py` 生成的 JSON；
-3. `test_33500b_state_poll.py` 生成的 CSV（任选一小段即可）；
+
+```shell
+$ python scripts/test_33500b_query_matrix.py  USB0::XXX::INSTR
+Saved query matrix report to artifacts/33500b_query_matrix.json
+{
+  "timestamp": "2026-03-23 10:26:34",
+  "resource": "USB0::XXX::INSTR",
+  "results": [
+    {
+      "ok": true,
+      "command": "*IDN?",
+      "response": "Agilent Technologies,33521B,MY62003665,5.03-3.15-2.00-58-00"
+    },
+    {
+      "ok": true,
+      "command": "SYST:VERS?",
+      "response": "1994.0"
+    },
+    {
+      "ok": true,
+      "command": "SYST:ERR?",
+      "response": "-420,\"Query UNTERMINATED\""
+    },
+    {
+      "ok": false,
+      "command": "*TST?",
+      "error": "VI_ERROR_TMO (-1073807339): Timeout expired before operation completed."
+    },
+    {
+      "ok": true,
+      "command": "FUNC?",
+      "response": "SIN"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC?",
+      "response": "SIN"
+    },
+    {
+      "ok": true,
+      "command": "FREQ?",
+      "response": "+1.000000000000000E+03"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FREQ?",
+      "response": "+1.000000000000000E+03"
+    },
+    {
+      "ok": true,
+      "command": "VOLT?",
+      "response": "+1.0000000000000E-01"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:VOLT?",
+      "response": "+1.0000000000000E-01"
+    },
+    {
+      "ok": true,
+      "command": "VOLT:OFFSET?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:VOLT:OFFSET?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "PHAS?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:PHAS?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "OUTP?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "OUTP1?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "BURS:STAT?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:BURS:STAT?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "TRIG:SOUR?",
+      "response": "IMM"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC:ARB?",
+      "response": "\"INT:\\BUILTIN\\EXP_RISE.ARB\""
+    },
+    {
+      "ok": true,
+      "command": "MMEM:CAT?",
+      "response": "180224,71737344,\"BuiltIn,FOLD,13735\",\"332XX_ARBS,FOLD,0\""
+    }
+  ]
+}
+
+```
+
+3. `test_33500b_state_poll.py` 输出文件见 artifacts\33500b_state_poll.csv ；
+
+
+```shell
+$ python scripts/test_33500b_state_poll.py  USB0::XXX::INSTR
+```
+
 4. `test_33500b_arb_upload.py` 是否成功、错误队列返回什么；
+
+```shell
+$ python scripts/test_33500b_arb_upload.py  USB0::XXX::INSTR
+{
+  "timestamp": "2026-03-23 10:29:42",
+  "resource": "USB0::XXX::INSTR",
+  "arb_name": "CodexSine",
+  "points": 64,
+  "steps": [
+    {
+      "ok": true,
+      "command": "*CLS"
+    },
+    {
+      "ok": true,
+      "command": "DATA:VOL:CLE"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:DATA:ARB CodexSine,0.000000,0.098017,0.195090,0.290285,0.382683,0.471397,0.555570,0.634393,0.707107,0.773010,0.831470,0.881921,0.923880,0.956940,0.980785,0.995185,1.000000,0.995185,0.980785,0.956940,0.923880,0.881921,0.831470,0.773010,0.707107,0.634393,0.555570,0.471397,0.382683,0.290285,0.195090,0.098017,0.000000,-0.098017,-0.195090,-0.290285,-0.382683,-0.471397,-0.555570,-0.634393,-0.707107,-0.773010,-0.831470,-0.881921,-0.923880,-0.956940,-0.980785,-0.995185,-1.000000,-0.995185,-0.980785,-0.956940,-0.923880,-0.881921,-0.831470,-0.773010,-0.707107,-0.634393,-0.555570,-0.471397,-0.382683,-0.290285,-0.195090,-0.098017"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC:ARB CodexSine"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC ARB"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:VOLT 1.0"
+    },
+    {
+      "ok": true,
+      "command": "FUNC?",
+      "response": "ARB"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC?",
+      "response": "ARB"
+    },
+    {
+      "ok": true,
+      "command": "SYST:ERR?",
+      "response": "+0,\"No error\""
+    }
+  ]
+}
+```
+
 5. 你的设备资源名（例如 `USB0::...::INSTR` 或 `TCPIP0::...::INSTR`）和固件版本。
 
-拿到这些结果后，我可以进一步判断：
+请通过以上这些测试结果，进一步判断：
 
 - 哪些 query 可稳定用于 Web；
 - 刷新频率能到多少；

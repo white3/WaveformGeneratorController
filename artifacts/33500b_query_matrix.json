@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-03-23 10:26:34",
+  "resource": "USB0::0x0957::0x2B07::MY62003665::0::INSTR",
+  "results": [
+    {
+      "ok": true,
+      "command": "*IDN?",
+      "response": "Agilent Technologies,33521B,MY62003665,5.03-3.15-2.00-58-00"
+    },
+    {
+      "ok": true,
+      "command": "SYST:VERS?",
+      "response": "1994.0"
+    },
+    {
+      "ok": true,
+      "command": "SYST:ERR?",
+      "response": "-420,\"Query UNTERMINATED\""
+    },
+    {
+      "ok": false,
+      "command": "*TST?",
+      "error": "VI_ERROR_TMO (-1073807339): Timeout expired before operation completed."
+    },
+    {
+      "ok": true,
+      "command": "FUNC?",
+      "response": "SIN"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC?",
+      "response": "SIN"
+    },
+    {
+      "ok": true,
+      "command": "FREQ?",
+      "response": "+1.000000000000000E+03"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FREQ?",
+      "response": "+1.000000000000000E+03"
+    },
+    {
+      "ok": true,
+      "command": "VOLT?",
+      "response": "+1.0000000000000E-01"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:VOLT?",
+      "response": "+1.0000000000000E-01"
+    },
+    {
+      "ok": true,
+      "command": "VOLT:OFFSET?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:VOLT:OFFSET?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "PHAS?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:PHAS?",
+      "response": "+0.0000000000000E+00"
+    },
+    {
+      "ok": true,
+      "command": "OUTP?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "OUTP1?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "BURS:STAT?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:BURS:STAT?",
+      "response": "0"
+    },
+    {
+      "ok": true,
+      "command": "TRIG:SOUR?",
+      "response": "IMM"
+    },
+    {
+      "ok": true,
+      "command": "SOUR1:FUNC:ARB?",
+      "response": "\"INT:\\BUILTIN\\EXP_RISE.ARB\""
+    },
+    {
+      "ok": true,
+      "command": "MMEM:CAT?",
+      "response": "180224,71737344,\"BuiltIn,FOLD,13735\",\"332XX_ARBS,FOLD,0\""
+    }
+  ]
+}
