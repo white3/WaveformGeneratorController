@@ -175,52 +175,6 @@ class Controller:
     def list_profiles(self):
         return self.config_repository.list_profiles()
 
-    def delete_profile(self, name: str, password: Optional[str] = None):
-        with self._lock:
-            self._require_password(password)
-            deleted = self.config_repository.delete_profile(name)
-            if not deleted:
-                raise ValueError(f"Profile '{name}' not found.")
-            return True
-
-    def rename_profile(self, old_name: str, new_name: str, password: Optional[str] = None):
-        with self._lock:
-            self._require_password(password)
-            source_name = (old_name or "").strip()
-            target_name = (new_name or "").strip()
-            if not source_name:
-                raise ValueError("Original profile name is required.")
-            if not target_name:
-                raise ValueError("New profile name is required.")
-            if source_name == target_name:
-                return True
-            renamed = self.config_repository.rename_profile(source_name, target_name)
-            if not renamed:
-                raise ValueError(f"Profile '{source_name}' not found.")
-            return True
-
-    def _find_active_profile_name(self):
-        current = {
-            "waveform": self.state["waveform"],
-            "frequency": float(self.state["frequency"]),
-            "amplitude": float(self.state["amplitude"]),
-            "offset": float(self.state["offset"]),
-            "phase": float(self.state["phase"]),
-            "channels": {1: bool(self.state["channels"].get(1, False)), 2: bool(self.state["channels"].get(2, False))},
-        }
-        for profile in self.list_profiles():
-            candidate = {
-                "waveform": profile["waveform"],
-                "frequency": float(profile["frequency"]),
-                "amplitude": float(profile["amplitude"]),
-                "offset": float(profile["offset"]),
-                "phase": float(profile["phase"]),
-                "channels": {1: bool(profile["channels"].get(1, False)), 2: bool(profile["channels"].get(2, False))},
-            }
-            if candidate == current:
-                return profile["name"]
-        return None
-
     def get_status(self):
         with self._lock:
             return {
@@ -237,5 +191,4 @@ class Controller:
                     "output_enabled": self.state["output_enabled"],
                 },
                 "profiles": self.list_profiles(),
-                "active_profile_name": self._find_active_profile_name(),
             }
