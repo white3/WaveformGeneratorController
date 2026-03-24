@@ -63,6 +63,34 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(self.controller.state["frequency"], 2000)
         self.assertIn(("waveform", "SQU"), self.controller.generator.commands)
 
+    def test_active_profile_tracking_and_delete(self):
+        self.controller.connect_device(password="secret")
+        self.controller.save_current_profile("baseline", password="secret")
+
+        status = self.controller.get_status()
+        self.assertEqual(status["active_profile_name"], "baseline")
+
+        self.controller.update_parameters(1234, 2.0, 0.0, 0.0, password="secret")
+        status = self.controller.get_status()
+        self.assertIsNone(status["active_profile_name"])
+
+        self.controller.delete_profile("baseline", password="secret")
+        self.assertEqual(self.controller.list_profiles(), [])
+
+    def test_rename_profile_changes_name_only(self):
+        self.controller.connect_device(password="secret")
+        self.controller.update_waveform("RAMP", password="secret")
+        self.controller.update_parameters(500, 1.2, 0.1, 10, password="secret")
+        self.controller.save_current_profile("original", password="secret")
+
+        self.controller.rename_profile("original", "renamed", password="secret")
+        profile = self.controller.load_profile("renamed", apply_to_device=False)
+
+        self.assertEqual(profile["waveform"], "RAMP")
+        self.assertEqual(profile["frequency"], 500)
+        with self.assertRaises(ValueError):
+            self.controller.load_profile("original", apply_to_device=False)
+
 
 if __name__ == "__main__":
     unittest.main()
