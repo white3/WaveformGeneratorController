@@ -36,3 +36,9 @@ Optional environment variables:
 - `WAVEFORM_WEB_PORT`: Web server bind port, default `8000`.
 
 Then open the GUI normally and visit `http://127.0.0.1:8000` for the Web console.
+
+## Demo
+
+- Python 3.11 | Windows 10 | Keysight 33500B
+
+![image-20260326200745421](.assets\image-20260326200745421.png)
